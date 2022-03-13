@@ -1,66 +1,83 @@
 <script setup lang="ts">
-import { NCard, useMessage, NRow, NCol, NStatistic } from "naive-ui";
-import { BusinessItem } from '../libs/business';
-import { directus } from "../libs/directus";
+import { NCard, NRow, NTooltip, useLoadingBar } from "naive-ui";
+import { ref } from "vue";
+import { BusinessItem } from "../libs/business";
 
-const props = defineProps<{ businessItem: BusinessItem; count?: number; operator: string; }>()
-const emit = defineEmits(['addCount', 'refreshCount']);
+const props = defineProps<{
+  businessItem: BusinessItem;
+  count?: number;
+  operator: string;
+}>();
+const emit = defineEmits(["addCount", "refreshCount"]);
 
-const message = useMessage()
+const loadingBar = useLoadingBar();
 
 const addBusiness = (businessType: string) => {
-    directus.items('business').createOne({
-        type: businessType,
-        operator: [{
-            directus_users_id: {
-                id: props.operator
-            }
-        }],
-    }).then((newItem) => {
-      message.success('记录成功~')
-      emit('addCount', businessType)
-      emit('refreshCount');
-    })
-    .catch(() => {
-      message.error('记录失败了，可以再点一下试试')
-    });
+  loadingBar.start();
+  emit("addCount", businessType, () => {
+    loadingBar.finish();
+  });
 };
 </script>
 
 <template>
-  <n-card class="business-card" hoverable :header-style="{ paddingBottom: '8px' }" @click="addBusiness(businessItem.key)" >
-    <template #header>
-      <span class="business-card_title">{{ businessItem.title }}</span></template
-    >
-    <n-row class="business-card_description">
-      {{ businessItem.description }}
-    </n-row>
-    <template #footer>
-      <n-row>
-        <n-col :span="12">
-          <n-statistic label="本周总计" :value="count || 0">
-            <template #prefix>
-            </template>
-          </n-statistic>
-        </n-col>
-        <n-col :span="12">
-          <n-statistic label="我创建的" :value="count || 0">
-          </n-statistic>
-        </n-col>
-      </n-row>
+  <n-tooltip>
+    当前统计周期内已被点击 {{ count || 0 }} 次
+    <template #trigger placement="top" trigger="hover">
+      <n-card
+        class="business-card"
+        hoverable
+        embedded
+        :style="{
+          background: businessItem.background,
+          color: businessItem.color,
+          borderColor: businessItem.borderColor,
+        }"
+        :header-style="{ paddingBottom: '8px' }"
+        :data-count="count || 0"
+        @click="addBusiness(businessItem.key)"
+      >
+        <template #header>
+          <span
+            class="business-card_title"
+            :style="{
+              color: businessItem.color,
+            }"
+            >{{ businessItem.title }}</span
+          ></template
+        >
+        <n-row class="business-card_description">
+          {{ businessItem.description }}
+        </n-row>
+      </n-card>
     </template>
-  </n-card>
+  </n-tooltip>
 </template>
 
 <style scoped>
+@import url("https://fonts.loli.net/css2?family=Petit+Formal+Script&display=swap");
+
 .business-card {
   width: 240px;
   margin: 0 32px 32px 0;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.business-card::after {
+  display: block;
+  content: attr(data-count);
+  position: absolute;
+  right: 12px;
+  bottom: -32px;
+  font-size: 64px;
+  font-family: "Petit Formal Script", cursive;
+  opacity: 0.3;
 }
 
 .business-card_title {
   font-weight: bold;
 }
-
 </style>
