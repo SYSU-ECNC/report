@@ -33,7 +33,7 @@ const resetModal = () => {
   addCountModalConfirmLoading.value = false;
   addCountModalDeleteLoading.value = false;
   showAddCountModal.value = false;
-}
+};
 
 const addRecord = (businessType: string, callback: () => void) => {
   directus
@@ -68,16 +68,16 @@ const addRecord = (businessType: string, callback: () => void) => {
 };
 
 const updateRecordContent = () => {
-  if (addCountModalTextValue.value.trim() === '') {
+  if (addCountModalTextValue.value.trim() === "") {
     resetModal();
     return;
   }
 
   addCountModalConfirmLoading.value = true;
-    directus
+  directus
     .items("business")
     .updateOne(addCountModalRecordId.value, {
-      content: addCountModalTextValue.value
+      content: addCountModalTextValue.value,
     })
     .then(() => {
       message.info("备注成功了");
@@ -86,8 +86,8 @@ const updateRecordContent = () => {
     .catch(() => {
       message.error("备注失败了，可以再点一下试试");
     })
-    .finally(() => addCountModalConfirmLoading.value = false);
-}
+    .finally(() => (addCountModalConfirmLoading.value = false));
+};
 
 const deleteRecord = () => {
   addCountModalDeleteLoading.value = true;
@@ -102,7 +102,7 @@ const deleteRecord = () => {
     .catch(() => {
       message.error("撤回失败了，可以再点一下试试");
     })
-    .finally(() => addCountModalDeleteLoading.value = false);
+    .finally(() => (addCountModalDeleteLoading.value = false));
 };
 
 const refreshCount = () => {
@@ -194,8 +194,22 @@ onMounted(async () => {
     />
     <template #footer>
       <n-space>
-        <n-button strong secondary type="primary" :loading="addCountModalConfirmLoading" @click="updateRecordContent">确定</n-button>
-        <n-button strong secondary type="error" :loading="addCountModalDeleteLoading" @click="deleteRecord">手滑了，撤回这条记录</n-button>
+        <n-button
+          strong
+          secondary
+          type="primary"
+          :loading="addCountModalConfirmLoading"
+          @click="updateRecordContent"
+          >确定</n-button
+        >
+        <n-button
+          strong
+          secondary
+          type="error"
+          :loading="addCountModalDeleteLoading"
+          @click="deleteRecord"
+          >手滑了，撤回这条记录</n-button
+        >
       </n-space>
     </template>
   </n-modal>

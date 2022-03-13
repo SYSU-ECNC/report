@@ -36,7 +36,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container" :style="{ backgroundColor: osTheme === 'dark' ? 'black' : 'white' }">
+  <div
+    class="container"
+    :style="{ backgroundColor: osTheme === 'dark' ? 'black' : 'white' }"
+  >
     <n-config-provider :theme="theme">
       <n-message-provider>
         <n-loading-bar-provider>
@@ -58,7 +61,7 @@ onMounted(() => {
 
 .footer {
   position: fixed;
-  border-top: 1px solid rgba(255, 255, 255, .2);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   background-color: rgba(0, 0, 0, 0.6);
   color: #f5f5f7;
   backdrop-filter: saturate(180%) blur(20px);
