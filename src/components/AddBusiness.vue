@@ -217,7 +217,8 @@ onMounted(async () => {
 
 <style>
 .business-category {
-  margin: 0 32px;
+  margin-left: 32px;
+  margin-right: 32px;
 }
 
 .business-line-wrapper {
